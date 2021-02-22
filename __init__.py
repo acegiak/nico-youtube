@@ -83,7 +83,8 @@ class YoutubeSkill(CommonPlaySkill):
             LOG.debug('Could not find any results with the query term: ' + search_term)
         else:
             for vid in search_results:
-                print(vid)
+                if("videoId" not in vid):
+					continue
                 vid_id = vid['videoId']
                 vid_url = "/watch?v=" + str(vid_id)
                 self.stream_url = self.get_stream_url(vid_url)
