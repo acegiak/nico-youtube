@@ -70,8 +70,11 @@ class YoutubeSkill(CommonPlaySkill):
     
     def search_youtube(self, search_term):
         pastedauth = self.settings.get('yt_auth_header')
-        YTMusic.setup(filepath="headers_auth.json", headers_raw=pastedauth)
-        self.ytmusic = YTMusic("headers_auth.json")
+        if(len(pastedauth)>10):
+            YTMusic.setup(filepath="headers_auth.json", headers_raw=pastedauth)
+            self.ytmusic = YTMusic("headers_auth.json")
+        else:
+            self.ytmusic = YTMusic()
         tracklist = []
         search_results = self.ytmusic.search(search_term)
         if(len(search_results) <=0):
