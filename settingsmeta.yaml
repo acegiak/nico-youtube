@@ -1,0 +1,8 @@
+skillMetadata:
+   sections:
+      - name: Authoristion
+        fields:
+          - name: yt_auth_header
+            type: text
+            label: Paste in authorisation headers here.
+            value: ""
