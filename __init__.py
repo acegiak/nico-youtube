@@ -73,7 +73,7 @@ class YoutubeSkill(CommonPlaySkill):
     def search_youtube(self, search_term):
         self.ytmusic = YTMusic("headers_auth.json")
         tracklist = []
-        search_results = self.ytmusic.search(seach_term)
+        search_results = self.ytmusic.search(search_term)
         if(len(search_results) <=0):
             self.speak_dialog('not.found')
             wait_while_speaking()
