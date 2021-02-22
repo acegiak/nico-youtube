@@ -84,7 +84,7 @@ class YoutubeSkill(CommonPlaySkill):
         else:
             for vid in search_results:
                 if not "videoId" in vid:
-					continue
+                    continue
                 vid_id = vid['videoId']
                 vid_url = "/watch?v=" + str(vid_id)
                 self.stream_url = self.get_stream_url(vid_url)
