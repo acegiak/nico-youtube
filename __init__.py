@@ -24,7 +24,7 @@
 import re
 import requests
 import pafy
-from bs4 import BeautifulSoup
+from ytmusicapi import YTMusic
 
 from mycroft.skills.common_play_skill import CommonPlaySkill, CPSMatchLevel
 from mycroft.skills.core import intent_file_handler
@@ -49,6 +49,7 @@ class YoutubeSkill(CommonPlaySkill):
         self.regexes = {}
         self.mediaplayer = VlcService(config={'low_volume': 10, 'duck': True})
         self.audio_state = 'stopped'  # 'playing', 'stopped'
+        self.ytmusic = YTMusic('headers_auth.json')
 
     def CPS_match_query_phrase(self, phrase):
         # Look for regex matches starting from the most specific to the least
@@ -70,13 +71,14 @@ class YoutubeSkill(CommonPlaySkill):
     
     def search_youtube(self, search_term):
         tracklist = []
-        res = requests.get(search_url + search_term)
-        # TODO: check status code etc...
-        html = res.content
-        soup = BeautifulSoup(html, 'html.parser')
-        all_vid_id = re.findall(r'/watch\?v=(.{11})', str(soup))
-        if len(all_vid_id) >= 1:
-            for vid_id in all_vid_id:
+        search_results = self.ytmusic.search(seach_term)
+        if(len(search_results) <=0):
+            self.speak_dialog('not.found')
+            wait_while_speaking()
+            LOG.debug('Could not find any results with the query term: ' + search_term)
+        else:
+            for vid in search_results:
+                vid_id = vid['videoId']
                 vid_url = "/watch?v=" + str(vid_id)
                 self.stream_url = self.get_stream_url(vid_url)
                 LOG.debug('Found stream URL: ' + self.stream_url)
@@ -89,11 +91,7 @@ class YoutubeSkill(CommonPlaySkill):
             wait_while_speaking()
             self.mediaplayer.play()
             return
-        else:
-            # We didn't find any playable results
-            self.speak_dialog('not.found')
-            wait_while_speaking()
-            LOG.debug('Could not find any results with the query term: ' + search_term)
+
 
     def get_stream_url(self, youtube_url):
         abs_url = base_url + youtube_url
