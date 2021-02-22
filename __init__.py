@@ -49,8 +49,6 @@ class YoutubeSkill(CommonPlaySkill):
         self.regexes = {}
         self.mediaplayer = VlcService(config={'low_volume': 10, 'duck': True})
         self.audio_state = 'stopped'  # 'playing', 'stopped'
-        pastedauth = self.settings.get('yt_auth_header')
-        YTMusic.setup(filepath="headers_auth.json", headers_raw=pastedauth)
 
     def CPS_match_query_phrase(self, phrase):
         # Look for regex matches starting from the most specific to the least
@@ -71,6 +69,8 @@ class YoutubeSkill(CommonPlaySkill):
     # Attempt to find the first result matching the query string
     
     def search_youtube(self, search_term):
+        pastedauth = self.settings.get('yt_auth_header')
+        YTMusic.setup(filepath="headers_auth.json", headers_raw=pastedauth)
         self.ytmusic = YTMusic("headers_auth.json")
         tracklist = []
         search_results = self.ytmusic.search(search_term)
